@@ -1,24 +1,28 @@
-import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-const FetchComponent = ({ setLoading }) => {
+const FetchComponent = ({ setLoading, loading, children }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const response = await fetch(
+          'https://jsonplaceholder.typicode.com/posts'
+        );
         const data = await response.json();
         setPosts(data);
       } catch (error) {
-        console.error("Failed to fetch posts:", error);
+        console.error('Failed to fetch posts:', error);
       } finally {
-        setLoading(false);
+        setLoading();
       }
     };
 
     fetchPost();
   }, [setLoading]);
+
+  if (loading) return children;
 
   return (
     <section>
@@ -33,6 +37,8 @@ const FetchComponent = ({ setLoading }) => {
 
 FetchComponent.propTypes = {
   setLoading: PropTypes.func.isRequired,
+  children: PropTypes.any,
+  loading: PropTypes.bool,
 };
 
 export default FetchComponent;
